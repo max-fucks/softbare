@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000; /* Pure OLED Black */
+  --foreground: #ededed;
+  --surface: #09090b; /* Deep Zinc for cards */
+  --accent: #f43f5e; /* Rose-500 for high-tension UI hits */
+  --neon: #8b5cf6; /* Violet-500 for "Rare" drops */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-neon: var(--neon);
+  --shadow-glow: 0 0 40px -10px rgba(244, 63, 94, 0.5);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
