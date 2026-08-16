@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { headers } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia', // Latest Stripe API version
+  apiVersion: '2026-07-29.dahlia', // Latest Stripe API version
 });
 
 export async function createCheckoutSession() {
