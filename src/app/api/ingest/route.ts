@@ -1,59 +1,76 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { v4 as uuidv4 } from 'uuid';
 
-// This is the TMDB Person ID for a specific actress. 
-// For example, 1245 is Scarlett Johansson. 
-// We will start by pulling her data as a test.
-const ACTOR_ID = 1245; 
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
-
-export async function GET() {
+export async function POST(req: Request) {
   try {
-    // 1. Fetch Actor Details from TMDB
-    const actorRes = await fetch(`https://api.themoviedb.org/3/person/${ACTOR_ID}?api_key=${TMDB_API_KEY}`);
-    const actorData = await actorRes.json();
+    const { actorName, query } = await req.json();
+    // e.g., actorName: "Sydney Sweeney", query: "Sydney Sweeney GQ red carpet high res"
 
-    // 2. Insert Actor into Supabase (if they don't exist)
-    const { error: actorError } = await supabase
-      .from('actors')
-      .upsert({
-        tmdb_id: actorData.id,
-        name: actorData.name,
-        gender: actorData.gender,
-        popularity: actorData.popularity
-      });
+    // 1. Ensure the Actor exists in our new independent database
+    let { data: actor } = await supabase.from('actors').select('id').eq('name', actorName).single();
+    
+    if (!actor) {
+      const { data: newActor, error } = await supabase.from('actors').insert([{ name: actorName }]).select().single();
+      if (error) throw error;
+      actor = newActor;
+    }
 
-    if (actorError) throw actorError;
-
-    // 3. Fetch High-Res Images for this Actor
-    // TMDB has a specific endpoint for profiles/images
-    const imageRes = await fetch(`https://api.themoviedb.org/3/person/${ACTOR_ID}/images?api_key=${TMDB_API_KEY}`);
-    const imageData = await imageRes.json();
-
-    // 4. Format and Insert Images into the "looks" table
-    // We filter for high-quality images and build the full URL
-    const looksToInsert = imageData.profiles
-      .filter((img: any) => img.vote_average > 5) // Only take highly rated images
-      .map((img: any) => ({
-        actor_id: actorData.id,
-        image_url: `https://image.tmdb.org/t/p/original${img.file_path}`,
-        // We start everyone at a baseline ELO of 1200
-        elo_rating: 1200 
-      }));
-
-    const { error: looksError } = await supabase
-      .from('looks')
-      .upsert(looksToInsert, { onConflict: 'image_url' }); // Prevent duplicates
-
-    if (looksError) throw looksError;
-
-    return NextResponse.json({ 
-        success: true, 
-        message: `Successfully ingested ${actorData.name} and ${looksToInsert.length} looks.` 
+    // 2. Scrape the Open Web (Using Serper.dev for Google Images)
+    const scrapeRes = await fetch('https://google.serper.dev/images', {
+      method: 'POST',
+      headers: { 'X-API-KEY': process.env.SERPER_API_KEY!, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ q: query, num: 10 }) // Grab top 10 results
     });
+    const scrapeData = await scrapeRes.json();
+    
+    let ingestedCount = 0;
+
+    // 3. Process each scraped image
+    for (const img of scrapeData.images) {
+      const imageUrl = img.imageUrl;
+
+      // 4. The NSFW Filter (Sightengine API)
+      // We instruct it to flag hardcore nudity but allow standard/editorial content
+      const nsfwCheck = await fetch(`https://api.sightengine.com/1.0/check.json?models=nudity-2.0&api_user=${process.env.SIGHTENGINE_API_USER}&api_secret=${process.env.SIGHTENGINE_API_SECRET}&url=${encodeURIComponent(imageUrl)}`);
+      const nsfwData = await nsfwCheck.json();
+
+      // If it detects explicit sexual activity or full raw nudity, skip this image
+      if (nsfwData.nudity && (nsfwData.nudity.sexual_activity > 0.5 || nsfwData.nudity.raw > 0.5)) {
+        console.log(`Skipped explicit image for ${actorName}`);
+        continue; 
+      }
+
+      // 5. Download the image into our own memory
+      const imageResponse = await fetch(imageUrl);
+      const imageBuffer = await imageResponse.arrayBuffer();
+      const fileExtension = imageUrl.split('.').pop()?.split('?')[0] || 'jpg';
+      const fileName = `${actorName.replace(/\s+/g, '-').toLowerCase()}-${uuidv4()}.${fileExtension}`;
+
+      // 6. Upload to your Supabase Storage Bucket ('vault-images')
+      const { data: storageData, error: uploadError } = await supabase.storage
+        .from('vault-images')
+        .upload(fileName, imageBuffer, { contentType: `image/${fileExtension}` });
+
+      if (uploadError) continue; // Skip if upload fails
+
+      const publicUrl = supabase.storage.from('vault-images').getPublicUrl(fileName).data.publicUrl;
+
+      // 7. Log the final, hosted asset into the database
+      await supabase.from('looks').insert([{
+        actor_id: actor!.id,
+        image_url: publicUrl,
+        source_url: imageUrl,
+        elo_rating: 1200
+      }]);
+
+      ingestedCount++;
+    }
+
+    return NextResponse.json({ success: true, message: `Scraped, filtered, and hosted ${ingestedCount} new looks for ${actorName}.` });
 
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'Failed to ingest data' }, { status: 500 });
+    return NextResponse.json({ error: 'Ingestion pipeline failed' }, { status: 500 });
   }
 }

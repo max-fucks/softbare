@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SwipeCard from "@/components/SwipeCard";
+import Ticker from "@/components/Ticker";
 import { fetchMatchup, submitVote } from "@/app/actions/arena";
 
 export default function Arena() {
@@ -50,6 +51,7 @@ export default function Arena() {
 
   return (
     <main className="relative flex h-screen w-full items-center justify-center bg-background overflow-hidden">
+      <Ticker />
       
       {/* The Aesthetic Cards */}
       <div className="relative w-full max-w-sm h-[70vh]">

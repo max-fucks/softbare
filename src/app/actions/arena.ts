@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 
 // 1. Fetch the contenders
 export async function fetchMatchup() {
-  const { data, error } = await supabase.rpc('get_random_contenders');
+  const { data, error } = await supabase.rpc('get_tension_contenders');
   if (error) throw new Error('Failed to load contenders');
   return data;
 }
