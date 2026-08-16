@@ -28,7 +28,8 @@ export default function IngestForm() {
       } else {
         setStatus(`Error: ${data.error}`);
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error(err);
       setStatus("Critical failure connecting to ingestion pipeline.");
     } finally {
       setLoading(false);

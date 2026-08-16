@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function Ticker() {
-  const [trending, setTrending] = useState<any[]>([]);
+  const [trending, setTrending] = useState<Record<string, unknown>[]>([]);
 
   useEffect(() => {
     // Fetch the top 10 highest-rated looks to populate the ticker

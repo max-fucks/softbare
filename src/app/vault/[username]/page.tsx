@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import UploadModal from '@/components/UploadModal';
 import UpgradeButton from '@/components/UpgradeButton';
@@ -67,9 +68,9 @@ export default async function PublicVault({ params }: { params: { username: stri
         ))}
       </div>
 
-      <a href="/" className="mt-16 px-8 py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform uppercase tracking-widest shadow-glow">
+      <Link href="/" className="mt-16 px-8 py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform uppercase tracking-widest shadow-glow">
         Build Your Own Vault
-      </a>
+      </Link>
 
       <div className="mt-16 w-full flex justify-center">
         <UpgradeButton />

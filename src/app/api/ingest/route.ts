@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       const fileName = `${actorName.replace(/\s+/g, '-').toLowerCase()}-${uuidv4()}.${fileExtension}`;
 
       // 6. Upload to your Supabase Storage Bucket ('vault-images')
-      const { data: storageData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('vault-images')
         .upload(fileName, imageBuffer, { contentType: `image/${fileExtension}` });
 

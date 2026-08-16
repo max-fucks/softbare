@@ -7,8 +7,8 @@ export default function UpgradeButton() {
     try {
       const { url } = await createCheckoutSession();
       if (url) window.location.href = url; // Redirect to Stripe
-    } catch (error) {
-      console.error("Failed to initiate checkout");
+    } catch (error: unknown) {
+      console.error("Failed to initiate checkout", error);
     }
   };
 

@@ -21,12 +21,12 @@ export default async function AdminDashboard() {
       <section>
         <h2 className="text-xl font-bold mb-6">Global Top 10 (Highest ELO)</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          {topLooks?.map((look: any, index: number) => (
-            <div key={look.id} className="bg-black p-4 rounded-xl shadow-lg border border-gray-800">
+          {topLooks?.map((look: Record<string, unknown>, index: number) => (
+            <div key={look.id as string} className="bg-black p-4 rounded-xl shadow-lg border border-gray-800">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-2xl font-black text-gray-600">#{index + 1}</span>
                 <span className="bg-neon/20 text-neon px-3 py-1 rounded-full text-sm font-bold">
-                  {Math.round(look.elo_rating)}
+                  {Math.round(look.elo_rating as number)}
                 </span>
               </div>
               <div className="relative w-full aspect-[2/3] rounded-lg overflow-hidden mb-3">

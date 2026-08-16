@@ -5,7 +5,7 @@ export default function Login() {
   const signInWithGoogle = async () => {
     "use server";
     const supabase = await createClient();
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: 'https://softbare.app/auth/callback',

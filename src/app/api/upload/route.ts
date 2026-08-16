@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     const fileName = `user-upload-${uuidv4()}.${fileExtension}`;
 
     // 2. Upload directly to Supabase Storage
-    const { data: storageData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('vault-images')
       .upload(fileName, buffer, {
         contentType: file.type,
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     }]);
 
     return NextResponse.json({ success: true, url: publicUrl });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }

@@ -34,7 +34,8 @@ export default function UploadModal() {
       } else {
         setStatus("Upload failed. Please try again.");
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error);
       setStatus("Critical error during upload.");
     } finally {
       setLoading(false);

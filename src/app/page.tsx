@@ -6,7 +6,7 @@ import Ticker from "@/components/Ticker";
 import { fetchMatchup, submitVote } from "@/app/actions/arena";
 
 export default function Arena() {
-  const [contenders, setContenders] = useState<any[]>([]);
+  const [contenders, setContenders] = useState<Record<string, unknown>[]>([]);
   const [consensus, setConsensus] = useState<number | null>(null);
 
   // Load the first matchup
@@ -21,6 +21,7 @@ export default function Arena() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadNextMatch();
   }, []);
 
