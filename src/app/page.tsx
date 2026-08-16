@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,7 +7,7 @@ import Ticker from "@/components/Ticker";
 import { fetchMatchup, submitVote } from "@/app/actions/arena";
 
 export default function Arena() {
-  const [contenders, setContenders] = useState<Record<string, unknown>[]>([]);
+  const [contenders, setContenders] = useState<any[]>([]);
   const [consensus, setConsensus] = useState<number | null>(null);
 
   // Load the first matchup

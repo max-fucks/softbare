@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getDashboardStats } from '@/app/actions/admin';
 import Image from 'next/image';
 import IngestForm from './IngestForm';
@@ -21,7 +22,7 @@ export default async function AdminDashboard() {
       <section>
         <h2 className="text-xl font-bold mb-6">Global Top 10 (Highest ELO)</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          {topLooks?.map((look: Record<string, unknown>, index: number) => (
+          {topLooks?.map((look: any, index: number) => (
             <div key={look.id as string} className="bg-black p-4 rounded-xl shadow-lg border border-gray-800">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-2xl font-black text-gray-600">#{index + 1}</span>

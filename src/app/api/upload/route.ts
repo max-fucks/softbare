@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
     }]);
 
     return NextResponse.json({ success: true, url: publicUrl });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }

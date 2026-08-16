@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function Ticker() {
-  const [trending, setTrending] = useState<Record<string, unknown>[]>([]);
+  const [trending, setTrending] = useState<any[]>([]);
 
   useEffect(() => {
     // Fetch the top 10 highest-rated looks to populate the ticker

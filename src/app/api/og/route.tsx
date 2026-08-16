@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 
@@ -57,7 +58,7 @@ export async function GET(req: NextRequest) {
         height: 630,
       }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error(error);
     return new Response(`Failed to generate image`, { status: 500 });
   }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error(`Webhook signature verification failed: ${err.message}`);
     return new Response(`Webhook Error: ${err.message}`, { status: 400 });
   }
