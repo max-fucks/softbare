@@ -7,8 +7,10 @@ export default function Login() {
     "use server";
     const supabase = await createClient();
     const headersList = await headers();
-    const origin = headersList.get('origin') ||
+    const requestOrigin = headersList.get('origin') ||
       `${headersList.get('x-forwarded-proto') || 'https'}://${headersList.get('host')}`;
+    const origin = process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.NODE_ENV === 'production' ? 'https://softbare.vercel.app' : requestOrigin);
     const { data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
