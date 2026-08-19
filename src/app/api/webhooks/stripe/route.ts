@@ -2,13 +2,21 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { supabaseAdmin } from '@/lib/supabase/admin';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-07-29.dahlia',
-});
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("Stripe is not configured.");
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2026-07-29.dahlia',
+  });
+}
 
 export async function POST(req: Request) {
+  const stripe = getStripe();
+  const supabaseAdmin = getSupabaseAdmin();
+
   const body = await req.text(); // Must read as raw text for Stripe signature verification
   const headersList = await headers();
   const signature = headersList.get('stripe-signature');

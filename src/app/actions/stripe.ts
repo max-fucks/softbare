@@ -4,11 +4,18 @@ import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 import { headers } from 'next/headers';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-07-29.dahlia', // Latest Stripe API version
-});
+// Lazy initialization - only create Stripe when actually called
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("Stripe is not configured. Add STRIPE_SECRET_KEY to your environment variables.");
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2026-07-29.dahlia',
+  });
+}
 
 export async function createCheckoutSession() {
+  const stripe = getStripe();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
