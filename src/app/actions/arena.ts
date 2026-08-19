@@ -6,7 +6,10 @@ import { createClient } from '@/lib/supabase/server';
 // 1. Fetch the contenders
 export async function fetchMatchup() {
   const { data, error } = await supabase.rpc('get_tension_contenders');
-  if (!error && Array.isArray(data) && data.length >= 2) return data;
+  if (!error && Array.isArray(data)) {
+    if (data.length >= 2) return data;
+    return [];
+  }
 
   // Keep the arena usable when the legacy RPC has a stale PostgreSQL return type.
   // This read-only fallback preserves the existing table shape and data.
@@ -15,11 +18,13 @@ export async function fetchMatchup() {
     .select('id, image_url, actor_id, actors(name)')
     .limit(2);
 
-  if (fallbackError || !fallback || fallback.length < 2) {
+  if (!fallbackError && fallback) return fallback;
+
+  if (fallbackError) {
     throw new Error(`Failed to load contenders: ${error?.message || fallbackError?.message || 'not enough looks'}`);
   }
 
-  return fallback;
+  return [];
 }
 
 // 2. Submit the vote and calculate the Consensus Shock
