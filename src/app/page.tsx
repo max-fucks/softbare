@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import SwipeCard from "@/components/SwipeCard";
 import Ticker from "@/components/Ticker";
 import { fetchMatchup, submitVote } from "@/app/actions/arena";
@@ -61,9 +62,9 @@ export default function Arena() {
     return (
       <main className="flex h-screen flex-col items-center justify-center gap-6 bg-background px-6 text-center text-white relative">
         <div className="absolute top-6 right-6 flex gap-4 text-xs uppercase font-bold tracking-widest">
-          <a href="/login" className="text-gray-400 hover:text-white transition-colors">Login</a>
-          <a href="/vault/test" className="text-gray-400 hover:text-white transition-colors">Vault & Upload</a>
-          <a href="/admin" className="text-neon hover:underline">Admin</a>
+          <Link href="/login" className="text-gray-400 hover:text-white transition-colors">Login</Link>
+          <Link href="/vault/test" className="text-gray-400 hover:text-white transition-colors">Vault & Upload</Link>
+          <Link href="/admin" className="text-neon hover:underline">Admin</Link>
         </div>
 
         <p className="text-xs font-bold uppercase tracking-[0.3em] text-neon">Softbare Arena</p>
@@ -75,18 +76,18 @@ export default function Arena() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-4 mt-2">
-          <a
+          <Link
             href="/vault/test"
             className="rounded-full bg-white px-6 py-3 font-bold text-black transition-transform hover:scale-105 uppercase tracking-widest text-xs shadow-glow"
           >
             Upload a Look
-          </a>
-          <a
+          </Link>
+          <Link
             href="/admin"
             className="rounded-full border border-neon text-neon px-6 py-3 font-bold transition-all hover:bg-neon hover:text-black uppercase tracking-widest text-xs"
           >
             Open Admin Panel
-          </a>
+          </Link>
         </div>
       </main>
     );
@@ -98,9 +99,9 @@ export default function Arena() {
 
       {/* Navigation Overlay */}
       <div className="absolute top-16 right-6 z-50 flex gap-4 text-xs uppercase font-bold tracking-widest bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-800">
-        <a href="/login" className="text-gray-400 hover:text-white transition-colors">Login</a>
-        <a href="/vault/test" className="text-gray-400 hover:text-white transition-colors">Vault & Upload</a>
-        <a href="/admin" className="text-neon hover:underline">Admin</a>
+        <Link href="/login" className="text-gray-400 hover:text-white transition-colors">Login</Link>
+        <Link href="/vault/test" className="text-gray-400 hover:text-white transition-colors">Vault & Upload</Link>
+        <Link href="/admin" className="text-neon hover:underline">Admin</Link>
       </div>
       
       {/* The Aesthetic Cards */}

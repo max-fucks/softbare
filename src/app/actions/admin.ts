@@ -8,7 +8,7 @@ export async function getDashboardStats() {
 
   // 1. SECURITY: Check if you are the admin
   const { data: { user } } = await supabase.auth.getUser();
-  if (user?.email !== 'amster842@gmail.com') { // Admin email configured
+  if (user?.email !== 'anshmax1212@gmail.com') { // Admin email configured
     redirect('/'); // Kick out regular users
   }
 

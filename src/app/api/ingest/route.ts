@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
     const serverSupabase = await createClient();
     const { data: { user } } = await serverSupabase.auth.getUser();
-    if (user?.email !== 'amster842@gmail.com') {
+    if (user?.email !== 'anshmax1212@gmail.com') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
