@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request) {
@@ -9,8 +9,15 @@ export async function POST(req: Request) {
     const file = formData.get('file') as File;
     const actorName = formData.get('actorName') as string;
 
+    const serverSupabase = await createClient();
+    const { data: { user } } = await serverSupabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+
     if (!file || !actorName) {
       return NextResponse.json({ error: 'Missing file or actor name' }, { status: 400 });
+    }
+    if (!file.type.startsWith('image/') || file.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Only images up to 10 MB are allowed' }, { status: 400 });
     }
 
     // 1. Convert file to buffer for Supabase Storage
@@ -19,7 +26,7 @@ export async function POST(req: Request) {
     const fileName = `user-upload-${uuidv4()}.${fileExtension}`;
 
     // 2. Upload directly to Supabase Storage
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await serverSupabase.storage
       .from('vault-images')
       .upload(fileName, buffer, {
         contentType: file.type,
@@ -28,22 +35,23 @@ export async function POST(req: Request) {
     if (uploadError) throw uploadError;
 
     // Get the public URL of the newly hosted image
-    const publicUrl = supabase.storage.from('vault-images').getPublicUrl(fileName).data.publicUrl;
+    const publicUrl = serverSupabase.storage.from('vault-images').getPublicUrl(fileName).data.publicUrl;
 
     // 3. Ensure Actor exists (or create them)
-    let { data: actor } = await supabase.from('actors').select('id').eq('name', actorName).single();
+    let { data: actor } = await serverSupabase.from('actors').select('id').eq('name', actorName).single();
     if (!actor) {
-      const { data: newActor, error: actorErr } = await supabase.from('actors').insert([{ name: actorName }]).select().single();
+      const { data: newActor, error: actorErr } = await serverSupabase.from('actors').insert([{ name: actorName }]).select().single();
       if (actorErr) throw actorErr;
       actor = newActor;
     }
 
     // 4. Inject into the Arena (Starts at base ELO of 1000 for user uploads to prove their worth)
-    await supabase.from('looks').insert([{
+    const { error: lookError } = await serverSupabase.from('looks').insert([{
       actor_id: actor!.id,
       image_url: publicUrl,
       elo_rating: 1000, 
     }]);
+    if (lookError) throw lookError;
 
     return NextResponse.json({ success: true, url: publicUrl });
   } catch (error: any) {

@@ -1,14 +1,18 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 
 export default function Login() {
   const signInWithGoogle = async () => {
     "use server";
     const supabase = await createClient();
+    const headersList = await headers();
+    const origin = headersList.get('origin') ||
+      `${headersList.get('x-forwarded-proto') || 'https'}://${headersList.get('host')}`;
     const { data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://softbare.app/auth/callback',
+        redirectTo: `${origin}/auth/callback`,
       },
     })
     if (data.url) {

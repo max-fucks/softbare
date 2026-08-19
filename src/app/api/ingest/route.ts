@@ -1,10 +1,25 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request) {
   try {
     const { actorName, query } = await req.json();
+    if (typeof actorName !== 'string' || typeof query !== 'string' || !actorName.trim() || !query.trim()) {
+      return NextResponse.json({ error: 'Actor name and query are required' }, { status: 400 });
+    }
+
+    const serverSupabase = await createClient();
+    const { data: { user } } = await serverSupabase.auth.getUser();
+    if (user?.email !== 'amster842@gmail.com') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    if (!process.env.SERPER_API_KEY || !process.env.SIGHTENGINE_API_USER || !process.env.SIGHTENGINE_API_SECRET) {
+      return NextResponse.json({ error: 'Ingestion services are not configured' }, { status: 503 });
+    }
+    const supabase = getSupabaseAdmin();
     // e.g., actorName: "Sydney Sweeney", query: "Sydney Sweeney GQ red carpet high res"
 
     // 1. Ensure the Actor exists in our new independent database
@@ -27,7 +42,7 @@ export async function POST(req: Request) {
     let ingestedCount = 0;
 
     // 3. Process each scraped image
-    for (const img of scrapeData.images) {
+    for (const img of scrapeData.images || []) {
       const imageUrl = img.imageUrl;
 
       // 4. The NSFW Filter (Sightengine API)
@@ -57,12 +72,13 @@ export async function POST(req: Request) {
       const publicUrl = supabase.storage.from('vault-images').getPublicUrl(fileName).data.publicUrl;
 
       // 7. Log the final, hosted asset into the database
-      await supabase.from('looks').insert([{
+      const { error: lookError } = await supabase.from('looks').insert([{
         actor_id: actor!.id,
         image_url: publicUrl,
         source_url: imageUrl,
         elo_rating: 1200
       }]);
+      if (lookError) continue;
 
       ingestedCount++;
     }

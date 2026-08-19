@@ -6,8 +6,8 @@ import { notFound } from 'next/navigation';
 import UploadModal from '@/components/UploadModal';
 import UpgradeButton from '@/components/UpgradeButton';
 
-export default async function PublicVault({ params }: { params: { username: string } }) {
-  // Await the params object in Next.js 15 Server Components
+export default async function PublicVault({ params }: { params: Promise<{ username: string }> }) {
+  // Route params are asynchronous in Next.js 16 Server Components.
   const { username } = await params;
 
   // 1. Fetch the user's ID based on their username

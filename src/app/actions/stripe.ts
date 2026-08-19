@@ -22,7 +22,8 @@ export async function createCheckoutSession() {
   if (!user) throw new Error("You must be logged in to buy the Black Card.");
 
   const headersList = await headers();
-  const origin = headersList.get('origin');
+  const origin = headersList.get('origin') ||
+    `${headersList.get('x-forwarded-proto') || 'https'}://${headersList.get('host')}`;
 
   // Create the Stripe Checkout Session
   const session = await stripe.checkout.sessions.create({
@@ -43,8 +44,8 @@ export async function createCheckoutSession() {
     ],
     mode: 'subscription',
     client_reference_id: user.id, // Tie the payment to the Supabase User
-    success_url: `${origin}/vault?success=true`,
-    cancel_url: `${origin}/vault?canceled=true`,
+    success_url: `${origin}/?success=true`,
+    cancel_url: `${origin}/?canceled=true`,
   });
 
   return { url: session.url };
