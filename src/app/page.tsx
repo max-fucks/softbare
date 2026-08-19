@@ -9,15 +9,23 @@ import { fetchMatchup, submitVote } from "@/app/actions/arena";
 export default function Arena() {
   const [contenders, setContenders] = useState<any[]>([]);
   const [consensus, setConsensus] = useState<number | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Load the first matchup
   const loadNextMatch = async () => {
     try {
       const data = await fetchMatchup();
+      if (!Array.isArray(data) || data.length < 2) {
+        setContenders([]);
+        setLoadError("The Arena is waiting for its first looks. An admin can ingest content to begin.");
+        return;
+      }
       setContenders(data || []);
       setConsensus(null); // Reset the consensus overlay
     } catch (e) {
       console.error(e);
+      setContenders([]);
+      setLoadError("The Arena is temporarily unavailable. Try again in a moment.");
     }
   };
 
@@ -49,7 +57,23 @@ export default function Arena() {
     }
   };
 
-  if (contenders.length === 0) return <div className="flex h-screen bg-background items-center justify-center text-white">Loading Arena...</div>;
+  if (contenders.length === 0) {
+    return (
+      <main className="flex h-screen flex-col items-center justify-center gap-5 bg-background px-6 text-center text-white">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-neon">Softbare Arena</p>
+        <h1 className="text-3xl font-black tracking-tight">{loadError || "Loading Arena..."}</h1>
+        {loadError && (
+          <button
+            type="button"
+            onClick={loadNextMatch}
+            className="rounded-full bg-white px-6 py-3 font-bold text-black transition-transform hover:scale-105"
+          >
+            Try again
+          </button>
+        )}
+      </main>
+    );
+  }
 
   return (
     <main className="relative flex h-screen w-full items-center justify-center bg-background overflow-hidden">
