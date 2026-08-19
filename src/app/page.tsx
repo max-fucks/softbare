@@ -11,14 +11,17 @@ export default function Arena() {
   const [contenders, setContenders] = useState<any[]>([]);
   const [consensus, setConsensus] = useState<number | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load the first matchup
   const loadNextMatch = async () => {
+    setIsLoading(true);
+    setLoadError(null);
     try {
       const data = await fetchMatchup();
       if (!Array.isArray(data) || data.length < 2) {
         setContenders([]);
-        setLoadError("The Arena is waiting for its first looks. An admin can ingest content to begin.");
+        setLoadError("The Arena is ready for its first looks.");
         return;
       }
       setContenders(data || []);
@@ -27,6 +30,8 @@ export default function Arena() {
       console.error(e);
       setContenders([]);
       setLoadError("The Arena is temporarily unavailable. Try again in a moment.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,35 +65,33 @@ export default function Arena() {
 
   if (contenders.length === 0) {
     return (
-      <main className="flex h-screen flex-col items-center justify-center gap-6 bg-background px-6 text-center text-white relative">
-        <div className="absolute top-6 right-6 flex gap-4 text-xs uppercase font-bold tracking-widest">
-          <Link href="/login" className="text-gray-400 hover:text-white transition-colors">Login</Link>
-          <Link href="/vault/test" className="text-gray-400 hover:text-white transition-colors">Vault & Upload</Link>
-          <Link href="/admin" className="text-neon hover:underline">Admin</Link>
-        </div>
+      <main className="relative min-h-screen overflow-hidden px-5 py-6 text-white md:px-10 md:py-8">
+        <div className="softbare-grid pointer-events-none absolute inset-0" />
+        <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between">
+          <Link href="/" className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-white text-lg font-black text-black">S</span><span className="text-lg font-black tracking-[.22em]">SOFTBARE</span></Link>
+          <nav className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[.18em] text-gray-400 md:gap-7"><Link href="/" className="text-white">Arena</Link><Link href="/vault" className="hover:text-white">Vault</Link><Link href="/login" className="rounded-full border border-white/15 px-4 py-2 hover:border-white/40 hover:text-white">Sign in</Link></nav>
+        </header>
 
-        <p className="text-xs font-bold uppercase tracking-[0.3em] text-neon">Softbare Arena</p>
-        <h1 className="text-3xl font-black tracking-tight max-w-md">
-          {loadError || "The Arena is waiting for content."}
-        </h1>
-        <p className="text-sm text-gray-400 max-w-sm">
-          Upload looks in the Vault or use the Admin panel to seed the Arena with actors.
-        </p>
+        <section className="relative z-10 mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-14 py-14 lg:grid-cols-[1fr_440px] lg:gap-24">
+          <div>
+            <p className="mb-6 flex items-center gap-3 text-xs font-bold uppercase tracking-[.3em] text-neon"><span className="h-2 w-2 animate-pulse rounded-full bg-accent" />Live aesthetic market</p>
+            <h1 className="max-w-3xl text-6xl font-black leading-[.92] tracking-[-.07em] sm:text-8xl">Vote for the<br /><span className="text-transparent [background:linear-gradient(110deg,#fff,#b38cff_45%,#ff4d6d)] bg-clip-text">best look.</span></h1>
+            <p className="mt-8 max-w-lg text-base leading-7 text-gray-400">A visual arena where style gets ranked in real time. Swipe between two looks, cast your vote, and watch the aesthetic index move.</p>
+            <div className="mt-9 flex flex-wrap gap-3"><Link href="/vault" className="rounded-full bg-white px-6 py-3 text-xs font-black uppercase tracking-[.18em] text-black transition hover:scale-105">Enter the vault</Link><Link href="/login" className="rounded-full border border-white/20 px-6 py-3 text-xs font-black uppercase tracking-[.18em] text-white transition hover:border-neon hover:text-neon">Join the market</Link></div>
+            <div className="mt-16 flex gap-10 border-t border-white/10 pt-6 text-xs uppercase tracking-[.18em] text-gray-500"><div><strong className="block text-2xl text-white">01</strong>Community ranked</div><div><strong className="block text-2xl text-white">24/7</strong>Live movement</div><div><strong className="block text-2xl text-white">∞</strong>Possibilities</div></div>
+          </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mt-2">
-          <Link
-            href="/vault/test"
-            className="rounded-full bg-white px-6 py-3 font-bold text-black transition-transform hover:scale-105 uppercase tracking-widest text-xs shadow-glow"
-          >
-            Upload a Look
-          </Link>
-          <Link
-            href="/admin"
-            className="rounded-full border border-neon text-neon px-6 py-3 font-bold transition-all hover:bg-neon hover:text-black uppercase tracking-widest text-xs"
-          >
-            Open Admin Panel
-          </Link>
-        </div>
+          <div className="relative mx-auto h-[500px] w-full max-w-[390px]">
+            <div className="absolute -right-3 top-5 h-full w-full rotate-[8deg] rounded-[2rem] border border-accent/20 bg-accent/10" />
+            <div className="absolute -left-3 top-2 h-full w-full rotate-[-7deg] rounded-[2rem] border border-neon/20 bg-neon/10" />
+            <div className="softbare-glass relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] p-7">
+              <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-neon/20 blur-3xl" /><div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-accent/20 blur-3xl" />
+              <div className="relative flex items-center justify-between text-[10px] font-bold uppercase tracking-[.22em] text-gray-400"><span>Market preview</span><span className="text-accent">● offline seed</span></div>
+              <div className="relative text-center"><div className="mx-auto mb-7 grid h-44 w-44 place-items-center rounded-full border border-white/10 bg-black/30 shadow-[0_0_80px_rgba(179,140,255,.15)]"><span className="text-8xl font-black tracking-[-.1em] text-white/90">S</span></div><p className="text-2xl font-black tracking-tight">The floor is yours.</p><p className="mx-auto mt-3 max-w-xs text-sm leading-6 text-gray-400">{isLoading ? "Opening the arena…" : loadError || "Add the first looks to start the live competition."}</p></div>
+              <div className="relative flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 p-4 text-[10px] font-bold uppercase tracking-[.16em] text-gray-500"><span>Current index</span><span className="text-lg text-white">— — —</span></div>
+            </div>
+          </div>
+        </section>
       </main>
     );
   }
@@ -100,7 +103,7 @@ export default function Arena() {
       {/* Navigation Overlay */}
       <div className="absolute top-16 right-6 z-50 flex gap-4 text-xs uppercase font-bold tracking-widest bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-800">
         <Link href="/login" className="text-gray-400 hover:text-white transition-colors">Login</Link>
-        <Link href="/vault/test" className="text-gray-400 hover:text-white transition-colors">Vault & Upload</Link>
+        <Link href="/vault" className="text-gray-400 hover:text-white transition-colors">Vault & Upload</Link>
         <Link href="/admin" className="text-neon hover:underline">Admin</Link>
       </div>
       

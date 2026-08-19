@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000; /* Pure OLED Black */
+  --background: #08070b;
   --foreground: #ededed;
-  --surface: #09090b; /* Deep Zinc for cards */
-  --accent: #f43f5e; /* Rose-500 for high-tension UI hits */
-  --neon: #8b5cf6; /* Violet-500 for "Rare" drops */
+  --surface: #111018;
+  --accent: #ff4d6d;
+  --neon: #b38cff;
 }
 
 @theme inline {
@@ -14,7 +14,7 @@
   --color-surface: var(--surface);
   --color-accent: var(--accent);
   --color-neon: var(--neon);
-  --shadow-glow: 0 0 40px -10px rgba(244, 63, 94, 0.5);
+  --shadow-glow: 0 0 40px -10px rgba(255, 77, 109, 0.5);
   --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: "Courier New", Courier, monospace;
   --animate-marquee: marquee 25s linear infinite;
@@ -29,4 +29,24 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(179, 140, 255, .12), transparent 28rem),
+    radial-gradient(circle at 90% 85%, rgba(255, 77, 109, .1), transparent 30rem);
+}
+
+* { box-sizing: border-box; }
+
+::selection { background: var(--accent); color: #08070b; }
+
+.softbare-grid {
+  background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.softbare-glass {
+  background: rgba(17, 16, 24, .72);
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 20px 70px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.06);
+  backdrop-filter: blur(18px);
 }
