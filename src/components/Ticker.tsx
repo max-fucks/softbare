@@ -1,39 +1,21 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+import { actorName } from "@/lib/utils";
+import type { TrendingLook } from "@/lib/types";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-
-export default function Ticker() {
-  const [trending, setTrending] = useState<any[]>([]);
-
-  useEffect(() => {
-    // Fetch the top 10 highest-rated looks to populate the ticker
-    const fetchTrending = async () => {
-      const { data } = await supabase
-        .from('looks')
-        .select('elo_rating, actors(name)')
-        .order('elo_rating', { ascending: false })
-        .limit(10);
-      
-      if (data) setTrending(data);
-    };
-
-    fetchTrending();
-  }, []);
-
+export default function Ticker({ trending }: { trending: TrendingLook[] }) {
   if (trending.length === 0) return null;
 
+  const items = [...trending, ...trending];
+
   return (
-    <div className="w-full bg-black border-y border-gray-900 overflow-hidden py-3 absolute top-0 z-50">
-      <div className="whitespace-nowrap flex animate-marquee">
-        {/* We map twice to create an infinite loop effect */}
-        {[...trending, ...trending].map((item, i) => (
-          <div key={i} className="inline-flex items-center mx-8">
-            <span className="text-white font-bold uppercase tracking-widest mr-2">{item.actors?.name || "Unknown"}</span>
-            {/* Simulate a "Stock Up" green arrow */}
-            <span className="text-green-500 font-black mr-2">▲</span>
-            <span className="text-gray-400 font-mono">{Math.round(item.elo_rating)}</span>
+    <div className="w-full overflow-hidden border-y border-white/10 bg-black/80 py-3 backdrop-blur-md">
+      <div className="flex w-max whitespace-nowrap animate-marquee">
+        {items.map((item, i) => (
+          <div key={`${item.actors?.name ?? "look"}-${i}`} className="mx-8 inline-flex items-center">
+            <span className="mr-2 font-display text-xs font-bold uppercase tracking-[.2em] text-white">
+              {actorName(item.actors)}
+            </span>
+            <span className="mr-2 text-xs font-black text-emerald-400">▲</span>
+            <span className="font-mono text-xs text-gray-400">{Math.round(item.elo_rating)}</span>
           </div>
         ))}
       </div>

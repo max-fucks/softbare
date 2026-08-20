@@ -12,7 +12,8 @@ export async function POST(req: Request) {
 
     const serverSupabase = await createClient();
     const { data: { user } } = await serverSupabase.auth.getUser();
-    if (user?.email !== 'anshmax1212@gmail.com') {
+    const { isAdminEmail } = await import('@/lib/admin');
+    if (!isAdminEmail(user?.email)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
