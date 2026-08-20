@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request) {
@@ -20,13 +21,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Only images up to 10 MB are allowed' }, { status: 400 });
     }
 
+    // Keep the route user-authenticated, but perform the writes with the
+    // server-only client so public tables and storage do not need broad
+    // client insert policies.
+    const adminSupabase = getSupabaseAdmin();
+
     // 1. Convert file to buffer for Supabase Storage
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileExtension = file.name.split('.').pop() || 'jpg';
     const fileName = `user-upload-${uuidv4()}.${fileExtension}`;
 
     // 2. Upload directly to Supabase Storage
-    const { error: uploadError } = await serverSupabase.storage
+    const { error: uploadError } = await adminSupabase.storage
       .from('vault-images')
       .upload(fileName, buffer, {
         contentType: file.type,
@@ -35,18 +41,18 @@ export async function POST(req: Request) {
     if (uploadError) throw uploadError;
 
     // Get the public URL of the newly hosted image
-    const publicUrl = serverSupabase.storage.from('vault-images').getPublicUrl(fileName).data.publicUrl;
+    const publicUrl = adminSupabase.storage.from('vault-images').getPublicUrl(fileName).data.publicUrl;
 
     // 3. Ensure Actor exists (or create them)
-    let { data: actor } = await serverSupabase.from('actors').select('id').eq('name', actorName).single();
+    let { data: actor } = await adminSupabase.from('actors').select('id').eq('name', actorName).single();
     if (!actor) {
-      const { data: newActor, error: actorErr } = await serverSupabase.from('actors').insert([{ name: actorName }]).select().single();
+      const { data: newActor, error: actorErr } = await adminSupabase.from('actors').insert([{ name: actorName }]).select().single();
       if (actorErr) throw actorErr;
       actor = newActor;
     }
 
     // 4. Inject into the Arena (Starts at base ELO of 1000 for user uploads to prove their worth)
-    const { error: lookError } = await serverSupabase.from('looks').insert([{
+    const { error: lookError } = await adminSupabase.from('looks').insert([{
       actor_id: actor!.id,
       image_url: publicUrl,
       elo_rating: 1000, 

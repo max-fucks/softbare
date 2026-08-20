@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server';
+import { isAdminEmail } from '@/lib/admin';
 import { redirect } from 'next/navigation';
 
 export async function getDashboardStats() {
@@ -8,8 +9,8 @@ export async function getDashboardStats() {
 
   // 1. SECURITY: Check if you are the admin
   const { data: { user } } = await supabase.auth.getUser();
-  if (user?.email !== 'anshmax1212@gmail.com') { // Admin email configured
-    redirect('/'); // Kick out regular users
+  if (!isAdminEmail(user?.email)) {
+    redirect('/');
   }
 
   // 2. Fetch the absolute highest-rated looks

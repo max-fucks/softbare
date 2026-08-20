@@ -17,12 +17,18 @@
   --shadow-glow: 0 0 40px -10px rgba(255, 77, 109, 0.5);
   --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: "Courier New", Courier, monospace;
+  --font-display: "Arial Black", Arial, sans-serif;
   --animate-marquee: marquee 25s linear infinite;
 
   @keyframes marquee {
     0% { transform: translateX(0%); }
     100% { transform: translateX(-100%); }
   }
+}
+
+.font-display {
+  font-family: "Arial Black", Arial, sans-serif;
+  letter-spacing: -0.04em;
 }
 
 body {

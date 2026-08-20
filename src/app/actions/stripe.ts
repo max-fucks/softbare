@@ -44,8 +44,8 @@ export async function createCheckoutSession() {
     ],
     mode: 'subscription',
     client_reference_id: user.id, // Tie the payment to the Supabase User
-    success_url: `${origin}/?success=true`,
-    cancel_url: `${origin}/?canceled=true`,
+    success_url: `${origin}/vault?success=true`,
+    cancel_url: `${origin}/vault?canceled=true`,
   });
 
   return { url: session.url };
