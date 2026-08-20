@@ -106,79 +106,82 @@ export default function ArenaClient({
     return (
       <main className="relative min-h-screen overflow-hidden text-white">
         <div className="softbare-grid pointer-events-none absolute inset-0" />
-        <section className="relative z-10 mx-auto grid min-h-[calc(100vh-6rem)] max-w-7xl items-center gap-14 px-5 py-10 lg:grid-cols-[1fr_440px] lg:gap-24 md:px-8">
+        <section className="relative z-10 mx-auto grid min-h-[calc(100vh-6rem)] max-w-7xl items-center gap-14 px-5 py-12 lg:grid-cols-[1fr_470px] lg:gap-24 md:px-8">
           <div>
-            <p className="mb-6 flex items-center gap-3 text-xs font-bold uppercase tracking-[.3em] text-neon">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
-              Live aesthetic market
+            <p className="mb-7 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[.32em] text-neon">
+              <span className="h-2 w-2 rounded-full bg-neon shadow-[0_0_18px_#b38cff]" />
+              The aesthetic index · 2026
             </p>
-            <h1 className="font-display max-w-3xl text-6xl font-black leading-[.92] tracking-[-.07em] sm:text-8xl">
-              Vote for the
+            <h1 className="font-display max-w-3xl text-6xl font-black leading-[.86] tracking-[-.08em] sm:text-8xl">
+              Taste is a
               <br />
-              <span className="bg-clip-text text-transparent [background:linear-gradient(110deg,#fff,#b38cff_45%,#ff4d6d)]">
-                best look.
+              <span className="bg-clip-text text-transparent [background:linear-gradient(110deg,#fff_15%,#b38cff_55%,#ff4d6d)]">
+                moving market.
               </span>
             </h1>
-            <p className="mt-8 max-w-lg text-base leading-7 text-gray-400">
-              Two looks enter. One rating moves. Softbare is a live stock market for visual culture — swipe, shock the
-              consensus, and bank S-Tier taste in your vault.
+            <p className="mt-8 max-w-lg text-[15px] leading-7 text-gray-400">
+              Softbare turns visual culture into a living index. The first collection is being curated now — then every
+              vote will move the floor.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href="/vault"
                 className="rounded-full bg-white px-6 py-3 text-xs font-black uppercase tracking-[.18em] text-black transition hover:scale-105"
               >
-                Enter the vault
+                Explore the vault
               </Link>
               <Link
                 href="/login"
                 className="rounded-full border border-white/20 px-6 py-3 text-xs font-black uppercase tracking-[.18em] text-white transition hover:border-neon hover:text-neon"
               >
-                Join the market
+                Get early access
               </Link>
             </div>
-            <div className="mt-16 flex gap-10 border-t border-white/10 pt-6 text-xs uppercase tracking-[.18em] text-gray-500">
+            <div className="mt-16 grid max-w-lg grid-cols-3 border-t border-white/10 pt-6 text-[10px] uppercase tracking-[.16em] text-gray-500">
               <div>
-                <strong className="block font-display text-2xl text-white">01</strong>Community ranked
+                <strong className="mb-1 block font-display text-2xl text-white">LIVE</strong>Community ranked
               </div>
               <div>
-                <strong className="block font-display text-2xl text-white">24/7</strong>Live ELO
+                <strong className="mb-1 block font-display text-2xl text-white">24/7</strong>Live ELO
               </div>
               <div>
-                <strong className="block font-display text-2xl text-white">S</strong>Vault your five
+                <strong className="mb-1 block font-display text-2xl text-white">S/5</strong>Vault your five
               </div>
             </div>
           </div>
-          <div className="relative mx-auto h-[500px] w-full max-w-[390px]">
-            <div className="absolute -right-3 top-5 h-full w-full rotate-[8deg] rounded-[2rem] border border-accent/20 bg-accent/10" />
-            <div className="absolute -left-3 top-2 h-full w-full rotate-[-7deg] rounded-[2rem] border border-neon/20 bg-neon/10" />
-            <div className="softbare-glass relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] p-7">
-              <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-neon/20 blur-3xl" />
+          <div className="relative mx-auto h-[520px] w-full max-w-[410px]">
+            <div className="absolute -right-4 top-9 h-[88%] w-[88%] rotate-[9deg] rounded-[2.4rem] border border-accent/20 bg-accent/10" />
+            <div className="absolute -left-4 top-1 h-[92%] w-[92%] rotate-[-7deg] rounded-[2.4rem] border border-neon/20 bg-neon/10" />
+            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[2.4rem] border border-white/15 bg-[#111116] p-7 shadow-2xl shadow-black/40">
+              <div className="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-neon/20 blur-3xl" />
+              <div className="absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
               <div className="relative flex items-center justify-between text-[10px] font-bold uppercase tracking-[.22em] text-gray-400">
-                <span>Market preview</span>
-                <span className="text-accent">● seeding</span>
+                <span>Softbare / 001</span>
+                <span className="flex items-center gap-2 text-neon"><i className="h-1.5 w-1.5 rounded-full bg-neon" />curating</span>
               </div>
-              <div className="relative text-center">
-                <div className="mx-auto mb-7 grid h-44 w-44 place-items-center rounded-full border border-white/10 bg-black/30 shadow-[0_0_80px_rgba(179,140,255,.15)]">
-                  <span className="font-display text-8xl font-black tracking-[-.1em] text-white/90">S</span>
+              <div className="relative">
+                <div className="relative mx-auto mb-8 h-56 w-56 overflow-hidden rounded-full border border-white/15 bg-[#1b1b25] shadow-[0_0_90px_rgba(179,140,255,.2)]">
+                  <div className="absolute inset-7 rounded-full border border-white/10" />
+                  <div className="absolute left-1/2 top-1/2 h-40 w-24 -translate-x-1/2 -translate-y-1/2 rotate-[28deg] rounded-[50%] bg-gradient-to-b from-white/80 via-neon/80 to-accent/70 blur-[1px]" />
+                  <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/80 blur-2xl" />
                 </div>
-                <p className="font-display text-2xl font-black tracking-tight">The floor is yours.</p>
-                <p className="mx-auto mt-3 max-w-xs text-sm leading-6 text-gray-400">
-                  {isLoading ? "Opening the arena…" : loadError || "Ingest the first looks from Admin to open live trading."}
+                <p className="font-display text-3xl font-black tracking-[-.04em]">The floor is forming.</p>
+                <p className="mx-auto mt-3 max-w-xs text-center text-sm leading-6 text-gray-400">
+                  {isLoading ? "Opening the index…" : loadError || "The first looks are being selected for the public arena."}
                 </p>
                 {!isLoading && (
                   <button
                     type="button"
                     onClick={() => void loadNextMatch()}
-                    className="mt-6 rounded-full border border-white/15 px-5 py-2 text-[10px] font-black uppercase tracking-[.2em] text-gray-300 hover:border-neon hover:text-neon"
+                    className="mt-6 rounded-full border border-white/20 bg-white/[.04] px-5 py-2.5 text-[10px] font-black uppercase tracking-[.2em] text-gray-300 transition hover:border-neon hover:bg-neon/10 hover:text-neon"
                   >
-                    Retry feed
+                    Refresh index
                   </button>
                 )}
               </div>
-              <div className="relative flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 p-4 text-[10px] font-bold uppercase tracking-[.16em] text-gray-500">
-                <span>Current index</span>
-                <span className="font-mono text-lg text-white">— — —</span>
+              <div className="relative grid grid-cols-2 gap-3 text-[10px] font-bold uppercase tracking-[.16em] text-gray-500">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><span className="block">Looks live</span><strong className="mt-1 block font-mono text-lg text-white">0 / 100</strong></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><span className="block">Market state</span><strong className="mt-1 block font-mono text-lg text-neon">OPENING</strong></div>
               </div>
             </div>
           </div>
